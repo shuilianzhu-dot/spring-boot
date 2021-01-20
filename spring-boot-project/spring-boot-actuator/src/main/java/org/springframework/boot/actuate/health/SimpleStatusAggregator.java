@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2019 the original author or authors.
+ * Copyright 2012-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,9 @@ import org.springframework.util.ObjectUtils;
 public class SimpleStatusAggregator implements StatusAggregator {
 
 	private static final List<String> DEFAULT_ORDER;
+
+	static final StatusAggregator INSTANCE;
+
 	static {
 		List<String> defaultOrder = new ArrayList<>();
 		defaultOrder.add(Status.DOWN.getCode());
@@ -44,6 +47,7 @@ public class SimpleStatusAggregator implements StatusAggregator {
 		defaultOrder.add(Status.UP.getCode());
 		defaultOrder.add(Status.UNKNOWN.getCode());
 		DEFAULT_ORDER = Collections.unmodifiableList(getUniformCodes(defaultOrder.stream()));
+		INSTANCE = new SimpleStatusAggregator();
 	}
 
 	private final List<String> order;
@@ -85,7 +89,8 @@ public class SimpleStatusAggregator implements StatusAggregator {
 			return null;
 		}
 		StringBuilder builder = new StringBuilder();
-		for (char ch : code.toCharArray()) {
+		for (int i = 0; i < code.length(); i++) {
+			char ch = code.charAt(i);
 			if (Character.isAlphabetic(ch) || Character.isDigit(ch)) {
 				builder.append(Character.toLowerCase(ch));
 			}
